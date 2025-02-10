@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rock Paper Scissors</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+        }
+
+        .game-container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 2rem;
+            color: #fff;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .choices {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .choice {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            /* padding: 1rem; */
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.2s;
+            width: 100px;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .choice:hover {
+            transform: scale(1.1);
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .choice img {
+            width: 100%;
+            height: 100%;
+            border-radius: 100%;
+            transform: translateX(px);
+            object-fit: cover;
+        }
+
+        .result {
+            margin-top: 2rem;
+            font-size: 1.5rem;
+        }
+
+        .score {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 2rem;
+            font-size: 1.2rem;
+        }
+
+        .moves {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 2rem;
+            gap: 2rem;
+        }
+
+        .move-display {
+            font-size: 1.2rem;
+        }
+
+        .reset-btn {
+            margin-top: 2rem;
+            padding: 0.8rem 1.5rem;
+            background: #e74c3c;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .reset-btn:hover {
+            background: #c0392b;
+        }
+
+        @media (max-width: 600px) {
+            .game-container {
+                padding: 1rem;
+                margin: 1rem;
+            }
+
+            .choices {
+                gap: 1rem;
+            }
+
+            .choice {
+                width: 60px;
+                height: 60px;
+            }
+
+            .choice img {
+                width: 30px;
+                height: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>Rock Paper Scissors</h1>
+        <div class="choices">
+            <button class="choice" onclick="play('rock')">
+                <img src="img/rock.png" alt="Rock">
+            </button>
+            <button class="choice" onclick="play('paper')">
+                <img src="img/paper.png" alt="Paper">
+            </button>
+            <button class="choice" onclick="play('scissors')">
+                <img src="img/scissors.png" alt="Scissors">
+            </button>
+        </div>
+        <div class="moves">
+            <div class="move-display">
+                You: <span id="player-move">-</span>
+            </div>
+            <div class="move-display">
+                Computer: <span id="computer-move">-</span>
+            </div>
+        </div>
+        <div class="result" id="result">Choose your move!</div>
+        <div class="score">
+            <div>Wins: <span id="wins">0</span></div>
+            <div>Ties: <span id="ties">0</span></div>
+            <div>Losses: <span id="losses">0</span></div>
+        </div>
+        <button class="reset-btn" onclick="resetGame()">Reset Game</button>
+    </div>
+
+    <script>
+        let scores = {
+            wins: 0,
+            ties: 0,
+            losses: 0
+        };
+
+        function play(playerChoice) {
+            const choices = ['rock', 'paper', 'scissors'];
+            const computerChoice = choices[Math.floor(Math.random() * 3)];
+            
+            document.getElementById('player-move').textContent = playerChoice;
+            document.getElementById('computer-move').textContent = computerChoice;
+
+            const result = getResult(playerChoice, computerChoice);
+            updateScore(result);
+            displayResult(playerChoice, computerChoice, result);
+        }
+
+        function getResult(player, computer) {
+            if (player === computer) return 'tie';
+            
+            const winningCombos = {
+                rock: 'scissors',
+                paper: 'rock',
+                scissors: 'paper'
+            };
+            
+            return winningCombos[player] === computer ? 'win' : 'lose';
+        }
+
+        function updateScore(result) {
+            if (result === 'win') scores.wins++;
+            else if (result === 'tie') scores.ties++;
+            else scores.losses++;
+
+            document.getElementById('wins').textContent = scores.wins;
+            document.getElementById('ties').textContent = scores.ties;
+            document.getElementById('losses').textContent = scores.losses;
+        }
+
+        function displayResult(player, computer, result) {
+            const messages = {
+                win: '🎉 You win!',
+                lose: '😔 Computer wins!',
+                tie: '🤝 It\'s a tie!'
+            };
+            
+            document.getElementById('result').textContent = messages[result];
+        }
+
+        function resetGame() {
+            scores = {
+                wins: 0,
+                ties: 0,
+                losses: 0
+            };
+            
+            document.getElementById('wins').textContent = '0';
+            document.getElementById('ties').textContent = '0';
+            document.getElementById('losses').textContent = '0';
+            document.getElementById('result').textContent = 'Choose your move!';
+            document.getElementById('player-move').textContent = '-';
+            document.getElementById('computer-move').textContent = '-';
+        }
+    </script>
+</body>
+</html>
